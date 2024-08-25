@@ -1,10 +1,14 @@
 import React, { useState } from "react";
 
-export default function Login() {
+interface LoginProps {
+  onLogin?: React.Dispatch<React.SetStateAction<string>>;
+}
+
+const Login: React.FC<LoginProps> = ({ onLogin }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState<any>(null);
   const [token, setToken] = useState("");
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -38,6 +42,7 @@ export default function Login() {
         setMessage("Login successful!");
         setUser(userData);
         setToken(data.token);
+        onLogin && onLogin(data.token); // Use onLogin if provided
         console.log("Success:", data);
       } else {
         setMessage(`Login failed: ${data.message}`);
@@ -63,10 +68,10 @@ export default function Login() {
       if (response.ok) {
         console.log("User data:", data);
       } else {
-        console.error("Failed to fetch user data:", data);
+        // console.error("Failed to fetch user data:", data);
       }
     } catch (error) {
-      console.error("Network Error:", error);
+      // console.error("Network Error:", error);
     }
   };
 
@@ -145,7 +150,6 @@ export default function Login() {
                     alt={user.username}
                     className="mx-auto rounded-full mt-2"
                   />
-
                   <button
                     onClick={fetchUserData}
                     className="bg-blue-600 text-white rounded-lg mt-4 p-2 hover:scale-105 transition duration-300"
@@ -206,4 +210,6 @@ export default function Login() {
       </div>
     </>
   );
-}
+};
+
+export default Login;

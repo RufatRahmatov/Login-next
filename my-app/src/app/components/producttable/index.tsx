@@ -6,7 +6,11 @@ interface Product {
   price: number;
 }
 
-const ProductTable: React.FC = () => {
+interface ProductTableProps {
+  token: string;
+}
+
+const ProductTable: React.FC<ProductTableProps> = ({ token }) => {
   const [products, setProducts] = useState<Product[]>([]);
   const [newProduct, setNewProduct] = useState({ title: "", price: 0 });
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);

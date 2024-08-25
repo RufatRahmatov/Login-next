@@ -21,7 +21,11 @@ interface Cart {
   totalQuantity: number;
 }
 
-const Card = () => {
+interface CartProps {
+  token: string;
+}
+
+const Card: React.FC<CartProps> = ({ token }) => {
   const [carts, setCarts] = useState<Cart[]>([]);
   const [cartId, setCartId] = useState<string>("");
   const [userId, setUserId] = useState<string>("");
@@ -49,6 +53,7 @@ const Card = () => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(newCart),
     })
@@ -69,6 +74,7 @@ const Card = () => {
       method: "PUT",
       headers: {
         "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(updatedCart),
     })
@@ -84,6 +90,9 @@ const Card = () => {
   const deleteCart = (id: number) => {
     fetch(`https://dummyjson.com/carts/${id}`, {
       method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     })
       .then((res) => res.json())
       .then(() => {
