@@ -1,8 +1,12 @@
 import React, { useState } from "react";
+import Loading from "../loading";
 
 interface LoginProps {
   onLogin?: React.Dispatch<React.SetStateAction<string>>;
 }
+
+//  username: emilys
+// password: emilyspass
 
 const Login: React.FC<LoginProps> = ({ onLogin }) => {
   const [username, setUsername] = useState("");
@@ -10,9 +14,11 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
   const [message, setMessage] = useState("");
   const [user, setUser] = useState<any>(null);
   const [token, setToken] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setLoading(true);
 
     const payload = {
       username,
@@ -42,7 +48,7 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
         setMessage("Login successful!");
         setUser(userData);
         setToken(data.token);
-        onLogin && onLogin(data.token); // Use onLogin if provided
+        onLogin && onLogin(data.token);
         console.log("Success:", data);
       } else {
         setMessage(`Login failed: ${data.message}`);
@@ -51,6 +57,11 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
     } catch (error) {
       setMessage("An error occurred. Please try again.");
       console.error("Network Error:", error);
+    } finally {
+      setLoading(false);
+      setTimeout(() => {
+        setLoading(false);
+      }, 3000);
     }
   };
 
@@ -68,11 +79,8 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
       if (response.ok) {
         console.log("User data:", data);
       } else {
-        // console.error("Failed to fetch user data:", data);
       }
-    } catch (error) {
-      // console.error("Network Error:", error);
-    }
+    } catch (error) {}
   };
 
   return (
@@ -131,12 +139,17 @@ const Login: React.FC<LoginProps> = ({ onLogin }) => {
                   </span>
                 </a>
                 <button
-                  className="bg-gradient-to-r dark:text-gray-300 from-blue-500 to-purple-500 shadow-lg mt-6 p-2 text-white rounded-lg w-full hover:scale-105 hover:from-purple-500 hover:to-blue-500 transition duration-300 ease-in-out"
+                  className="bg-gradient-to-r dark:text-gray-300 from-blue-500 to-purple-500 shadow-lg mt-6 p-2 text-white rounded-lg w-full hover:scale-105 hover:from-purple-500 hover:to-blue-500 transition duration-300 ease-in-out flex justify-center gap-4"
                   type="submit"
                 >
-                  LOG IN
+                  LOG IN <Loading />
                 </button>
               </form>
+              {loading && (
+                <div className="flex justify-center mt-4">
+                  <Loading />
+                </div>
+              )}
               {message && (
                 <div className="mt-4 text-center text-red-500">{message}</div>
               )}

@@ -43,26 +43,48 @@ const ProductTable: React.FC<ProductTableProps> = ({ token }) => {
   };
 
   return (
-    <div>
-      <h2>Product Table</h2>
-      <table>
+    <div className="shadow-lg rounded-lg overflow-hidden mx-4 md:mx-10">
+      <h2 className="text-xl font-bold mb-4 p-6 ml-[800px]">Product Table</h2>
+      <table className="w-full table-fixed">
         <thead>
-          <tr>
-            <th>ID</th>
-            <th>Title</th>
-            <th>Price</th>
-            <th>Actions</th>
+          <tr className="bg-gray-100">
+            <th className="w-1/4 py-4 px-6 text-left text-gray-600 font-bold uppercase">
+              ID
+            </th>
+            <th className="w-1/4 py-4 px-6 text-left text-gray-600 font-bold uppercase">
+              Title
+            </th>
+            <th className="w-1/4 py-4 px-6 text-left text-gray-600 font-bold uppercase">
+              Price
+            </th>
+            <th className="w-1/4 py-4 px-6 text-left text-gray-600 font-bold uppercase">
+              Actions
+            </th>
           </tr>
         </thead>
-        <tbody>
+        <tbody className="bg-white">
           {products.map((product) => (
             <tr key={product.id}>
-              <td>{product.id}</td>
-              <td>{product.title}</td>
-              <td>${product.price}</td>
-              <td>
-                <button onClick={() => setEditingProduct(product)}>Edit</button>
-                <button onClick={() => deleteProduct(product.id)}>
+              <td className="py-4 px-6 border-b border-gray-200">
+                {product.id}
+              </td>
+              <td className="py-4 px-6 border-b border-gray-200 truncate">
+                {product.title}
+              </td>
+              <td className="py-4 px-6 border-b border-gray-200">
+                ${product.price}
+              </td>
+              <td className="py-4 px-6 border-b border-gray-200">
+                <button
+                  className="bg-blue-700 text-white py-1 px-2 rounded mr-2 text-xs hover:scale-105 ease-in-out duration-300 w-[90px] h-[37px] "
+                  onClick={() => setEditingProduct(product)}
+                >
+                  Edit
+                </button>
+                <button
+                  className="bg-red-700 text-white py-1 px-2 rounded text-xs hover:scale-105 ease-in-out duration-300 w-[90px] h-[37px]"
+                  onClick={() => deleteProduct(product.id)}
+                >
                   Delete
                 </button>
               </td>
@@ -72,14 +94,15 @@ const ProductTable: React.FC<ProductTableProps> = ({ token }) => {
       </table>
 
       {editingProduct ? (
-        <div>
-          <h3>Edit Product</h3>
+        <div className="mt-6">
+          <h3 className="text-lg font-semibold mb-4">Edit Product</h3>
           <input
             type="text"
             value={editingProduct.title}
             onChange={(e) =>
               setEditingProduct({ ...editingProduct, title: e.target.value })
             }
+            className="border border-gray-300 rounded py-2 px-4 mb-2 w-full"
           />
           <input
             type="number"
@@ -90,13 +113,24 @@ const ProductTable: React.FC<ProductTableProps> = ({ token }) => {
                 price: parseFloat(e.target.value),
               })
             }
+            className="border border-gray-300 rounded py-2 px-4 mb-2 w-full"
           />
-          <button onClick={() => updateProduct(editingProduct)}>Save</button>
-          <button onClick={() => setEditingProduct(null)}>Cancel</button>
+          <button
+            className="bg-green-700 text-white py-2 px-4 rounded mr-2 hover:scale-105 ease-in-out duration-300"
+            onClick={() => updateProduct(editingProduct)}
+          >
+            Save
+          </button>
+          <button
+            className="bg-gray-300 text-gray-700 py-2 px-4 rounded hover:scale-105 ease-in-out duration-300"
+            onClick={() => setEditingProduct(null)}
+          >
+            Cancel
+          </button>
         </div>
       ) : (
-        <div>
-          <h3>Add Product</h3>
+        <div className="mt-6">
+          <h3 className="text-lg font-semibold mb-4">Add Product</h3>
           <input
             type="text"
             placeholder="Product Title"
@@ -104,6 +138,7 @@ const ProductTable: React.FC<ProductTableProps> = ({ token }) => {
             onChange={(e) =>
               setNewProduct({ ...newProduct, title: e.target.value })
             }
+            className="border border-gray-300 rounded py-2 px-4 mb-2 w-full"
           />
           <input
             type="number"
@@ -115,8 +150,14 @@ const ProductTable: React.FC<ProductTableProps> = ({ token }) => {
                 price: parseFloat(e.target.value),
               })
             }
+            className="border border-gray-300 rounded py-2 px-4 mb-2 w-full"
           />
-          <button onClick={addProduct}>Add Product</button>
+          <button
+            className="bg-purple-700 text-white py-2 px-4 rounded hover:scale-105 ease-in-out duration-300 "
+            onClick={addProduct}
+          >
+            Add Product
+          </button>
         </div>
       )}
     </div>

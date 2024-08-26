@@ -27,12 +27,12 @@ interface CartProps {
 
 const Card: React.FC<CartProps> = ({ token }) => {
   const [carts, setCarts] = useState<Cart[]>([]);
-  const [cartId, setCartId] = useState<string>("");
-  const [userId, setUserId] = useState<string>("");
-  const [totalProducts, setTotalProducts] = useState<string>("");
-  const [totalQuantity, setTotalQuantity] = useState<string>("");
-  const [total, setTotal] = useState<string>("");
-  const [discountedTotal, setDiscountedTotal] = useState<string>("");
+  const [cartId, setCartId] = useState<number | string>("");
+  const [userId, setUserId] = useState<number | string>("");
+  const [totalProducts, setTotalProducts] = useState<number | string>("");
+  const [totalQuantity, setTotalQuantity] = useState<number | string>("");
+  const [total, setTotal] = useState<number>(0);
+  const [discountedTotal, setDiscountedTotal] = useState<number>(0);
 
   useEffect(() => {
     fetch("https://dummyjson.com/carts")
@@ -42,11 +42,11 @@ const Card: React.FC<CartProps> = ({ token }) => {
 
   const addCart = () => {
     const newCart = {
-      userId: parseInt(userId),
-      totalProducts: parseInt(totalProducts),
-      totalQuantity: parseInt(totalQuantity),
-      total: parseFloat(total),
-      discountedTotal: parseFloat(discountedTotal),
+      userId: parseInt(userId as string, 10),
+      totalProducts: parseInt(totalProducts as string, 10),
+      totalQuantity: parseInt(totalQuantity as string, 10),
+      total: total,
+      discountedTotal: discountedTotal,
     };
 
     fetch("https://dummyjson.com/carts/add", {
@@ -63,11 +63,11 @@ const Card: React.FC<CartProps> = ({ token }) => {
 
   const updateCart = () => {
     const updatedCart = {
-      userId: parseInt(userId),
-      totalProducts: parseInt(totalProducts),
-      totalQuantity: parseInt(totalQuantity),
-      total: parseFloat(total),
-      discountedTotal: parseFloat(discountedTotal),
+      userId: parseInt(userId as string, 10),
+      totalProducts: parseInt(totalProducts as string, 10),
+      totalQuantity: parseInt(totalQuantity as string, 10),
+      total: total,
+      discountedTotal: discountedTotal,
     };
 
     fetch(`https://dummyjson.com/carts/${cartId}`, {
@@ -103,37 +103,40 @@ const Card: React.FC<CartProps> = ({ token }) => {
 
   return (
     <div className="p-4">
-      <h1 className="text-2xl font-bold mb-4">Shopping Carts</h1>
+      <h1 className="text-2xl font-bold mb-4 ml-[800px] p-6">Shopping Carts</h1>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
         {carts.map((cart) => (
           <div key={cart.id} className="border rounded-lg p-4 shadow-md">
             <h2 className="text-xl font-bold mb-2">User ID: {cart.userId}</h2>
             <p>Total Products: {cart.totalProducts}</p>
             <p>Total Quantity: {cart.totalQuantity}</p>
-            <p>Total Price: ${cart.total.toFixed(2)}</p>
-            <p>Discounted Total: ${cart.discountedTotal.toFixed(2)}</p>
-            <div className="mt-4">
-              {cart.products.map((product) => (
-                <div key={product.id} className="flex items-center mb-4">
-                  <img
-                    src={product.thumbnail}
-                    alt={product.title}
-                    className="w-16 h-16 rounded mr-4"
-                  />
-                  <div>
-                    <h3 className="text-lg font-semibold">{product.title}</h3>
-                    <p>Quantity: {product.quantity}</p>
-                    <p>Price: ${product.price}</p>
-                    <p>Total: ${product.total}</p>
-                    <p>Discount: {product.discountPercentage}%</p>
-                    <p>Discounted Total: ${product.discountedTotal}</p>
+            <p>Total Price: ${Number(cart.total).toFixed(2)}</p>
+            <p>Discounted Total: ${Number(cart.discountedTotal).toFixed(2)}</p>
+
+            <div className="mt-4 ">
+              {cart.products &&
+                cart.products.length > 0 &&
+                cart.products.map((product) => (
+                  <div key={product.id} className="flex items-center mb-4">
+                    <img
+                      src={product.thumbnail}
+                      alt={product.title}
+                      className="w-16 h-16 rounded mr-4"
+                    />
+                    <div>
+                      <h3 className="text-lg font-semibold">{product.title}</h3>
+                      <p>Quantity: {product.quantity}</p>
+                      <p>Price: ${product.price}</p>
+                      <p>Total: ${product.total}</p>
+                      <p>Discount: {product.discountPercentage}%</p>
+                      <p>Discounted Total: ${product.discountedTotal}</p>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
             </div>
             <button
               onClick={() => deleteCart(cart.id)}
-              className="bg-red-500 text-white p-2 rounded mt-4"
+              className="bg-red-700 text-white p-2 rounded mt-4 hover:scale-105 transition duration-300"
             >
               Delete Cart
             </button>
@@ -141,61 +144,61 @@ const Card: React.FC<CartProps> = ({ token }) => {
         ))}
       </div>
 
-      <h1 className="text-2xl font-bold mb-4">Dashboard</h1>
+      <h1 className="text-2xl font-bold mb-4 ml-[800px] p-4">Dashboard</h1>
       <div className="mb-4">
         <input
-          type="text"
+          type="number"
           placeholder="Cart ID (for update)"
           value={cartId}
           onChange={(e) => setCartId(e.target.value)}
           className="border rounded p-2 mb-2 w-full"
         />
         <input
-          type="text"
+          type="number"
           placeholder="User ID"
           value={userId}
           onChange={(e) => setUserId(e.target.value)}
           className="border rounded p-2 mb-2 w-full"
         />
         <input
-          type="text"
+          type="number"
           placeholder="Total Products"
           value={totalProducts}
           onChange={(e) => setTotalProducts(e.target.value)}
           className="border rounded p-2 mb-2 w-full"
         />
         <input
-          type="text"
+          type="number"
           placeholder="Total Quantity"
           value={totalQuantity}
           onChange={(e) => setTotalQuantity(e.target.value)}
           className="border rounded p-2 mb-2 w-full"
         />
         <input
-          type="text"
+          type="number"
           placeholder="Total Price"
           value={total}
-          onChange={(e) => setTotal(e.target.value)}
+          onChange={(e) => setTotal(parseFloat(e.target.value))}
           className="border rounded p-2 mb-2 w-full"
         />
         <input
-          type="text"
+          type="number"
           placeholder="Discounted Total"
           value={discountedTotal}
-          onChange={(e) => setDiscountedTotal(e.target.value)}
+          onChange={(e) => setDiscountedTotal(parseFloat(e.target.value))}
           className="border rounded p-2 mb-2 w-full"
         />
       </div>
       <div className="flex space-x-2">
         <button
           onClick={addCart}
-          className="bg-green-500 text-white p-2 rounded"
+          className="bg-purple-700 text-white p-2 rounded hover:scale-105 transition duration-300"
         >
           Add Cart
         </button>
         <button
           onClick={updateCart}
-          className="bg-blue-500 text-white p-2 rounded"
+          className="bg-blue-700 text-white p-2 rounded hover:scale-105 transition duration-300"
         >
           Update Cart
         </button>
